@@ -4,6 +4,7 @@ __pycache__/
 .env
 .pytest_cache/
 pytest-cache-files-*/
+tests/.tmp/
 .mypy_cache/
 dist/
 build/

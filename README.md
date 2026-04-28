@@ -59,6 +59,14 @@ Run tests:
 python -m pytest
 ```
 
+Show safe configuration metadata:
+
+```powershell
+python scripts/analyze_match.py data/sample_resume.txt data/sample_job_description.txt --show-config
+```
+
+For local secrets, copy `.env.example` to `.env` and edit `.env`. Never commit real API keys.
+
 If `python` is not available on Windows, install Python 3.11+ from https://www.python.org/downloads/windows/ and enable "Add python.exe to PATH" during installation.
 
 ## Project Structure
@@ -72,6 +80,7 @@ ai-job-match-assistant/
   app/
     __init__.py
     cli.py
+    config.py
     matcher.py
   data/
     sample_resume.txt

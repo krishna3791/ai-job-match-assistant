@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from app.config import load_config
 from app.matcher import MatchResult, analyze_match
 
 
@@ -67,12 +68,32 @@ def build_parser() -> argparse.ArgumentParser:
         default="text",
         help="Output format. Use json for APIs and automation.",
     )
+    parser.add_argument(
+        "--show-config",
+        action="store_true",
+        help="Show safe config metadata without printing secret values.",
+    )
     return parser
 
 
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+    config = load_config()
+
+    if args.show_config:
+        print(
+            json.dumps(
+                {
+                    "app_env": config.app_env,
+                    "model_provider": config.model_provider,
+                    "model_name": config.model_name,
+                    "has_openai_api_key": config.has_openai_api_key,
+                },
+                indent=2,
+            )
+        )
+        return
 
     resume_text = read_text_file(args.resume_file)
     job_description_text = read_text_file(args.job_description_file)
