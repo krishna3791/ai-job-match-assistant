@@ -59,6 +59,18 @@ Run tests:
 python -m pytest
 ```
 
+Run the API server:
+
+```powershell
+python -m uvicorn app.api:app --reload
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
 Show safe configuration metadata:
 
 ```powershell
@@ -78,16 +90,22 @@ ai-job-match-assistant/
   .env.example
   requirements.txt
   app/
+    api.py
     __init__.py
     cli.py
     config.py
     matcher.py
+    schemas.py
+    services.py
   data/
     sample_resume.txt
     sample_job_description.txt
   tests/
+    test_api.py
     test_cli.py
+    test_config.py
     test_matcher.py
+    test_services.py
   scripts/
     analyze_match.py
 ```

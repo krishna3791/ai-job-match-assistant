@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 from app.config import load_config
-from app.matcher import MatchResult, analyze_match
+from app.matcher import MatchResult
+from app.services import get_analyzer
 
 
 def read_text_file(path: Path) -> str:
@@ -97,7 +98,8 @@ def main() -> None:
 
     resume_text = read_text_file(args.resume_file)
     job_description_text = read_text_file(args.job_description_file)
-    result = analyze_match(resume_text, job_description_text)
+    analyzer = get_analyzer(config)
+    result = analyzer.analyze(resume_text, job_description_text)
 
     if args.format == "json":
         print(json.dumps(result_to_dict(result), indent=2))
