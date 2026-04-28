@@ -4,7 +4,9 @@ Portfolio project for moving from data engineering into AI engineering.
 
 GitHub: https://github.com/krishna3791/ai-job-match-assistant
 
-This first version works without paid AI APIs. It compares a resume with a job description using a simple skill-matching engine, then returns:
+This project works without paid AI APIs by default. It compares a resume with a job description using a deterministic mock analyzer, while also including an OpenAI structured-output provider path for future LLM-powered analysis.
+
+It returns:
 
 - Match score
 - Readiness level
@@ -15,14 +17,27 @@ This first version works without paid AI APIs. It compares a resume with a job d
 - Resume improvement suggestions
 - Personalized learning plan
 
-Later versions will add:
+Current backend features:
 
-- LLM-based analysis
 - FastAPI backend
 - SQLite storage
-- RAG and vector search
-- Frontend UI
-- Deployment
+- Analysis history
+- Local vector search over stored job descriptions
+- LLM-ready provider abstraction
+- OpenAI structured-output provider path
+- Automated tests
+
+## Architecture
+
+```mermaid
+flowchart LR
+    CLI["CLI"] --> Service["Analyzer Service"]
+    API["FastAPI API"] --> Service
+    Service --> Mock["Mock Analyzer"]
+    Service --> OpenAI["OpenAI Analyzer"]
+    API --> SQLite["SQLite History"]
+    API --> Vector["Local Vector Search"]
+```
 
 ## Quick Start
 
@@ -59,6 +74,12 @@ Run tests:
 python -m pytest
 ```
 
+Run evaluation cases:
+
+```powershell
+python scripts/run_evaluations.py
+```
+
 Run the API server:
 
 ```powershell
@@ -78,6 +99,9 @@ GET /health
 POST /analyze
 GET /history
 GET /history/{record_id}
+POST /jobs
+GET /jobs
+POST /jobs/search
 ```
 
 Show safe configuration metadata:
@@ -104,10 +128,12 @@ ai-job-match-assistant/
     cli.py
     config.py
     database.py
+    evaluation.py
     matcher.py
     repository.py
     schemas.py
     services.py
+    vector_search.py
   data/
     sample_resume.txt
     sample_job_description.txt
@@ -115,13 +141,23 @@ ai-job-match-assistant/
     test_api.py
     test_cli.py
     test_config.py
+    test_evaluation.py
+    test_jobs_api.py
     test_matcher.py
     test_repository.py
     test_services.py
+    test_vector_search.py
   scripts/
     analyze_match.py
+    run_evaluations.py
 ```
 
 ## Resume Bullet Draft
 
-Built an AI Job Match Assistant to compare resumes against job descriptions, identify skill gaps, generate match scores, and recommend targeted resume improvements. Designed the project as a production-style AI engineering portfolio app with planned LLM, RAG, API, database, evaluation, and deployment layers.
+Built a FastAPI-based AI Job Match Assistant that compares resumes against job descriptions, identifies skill gaps, generates match scores, stores analysis history in SQLite, supports local vector search over job descriptions, and includes a provider abstraction for mock and OpenAI structured-output analyzers.
+
+## Career Packaging
+
+- Architecture: `docs/ARCHITECTURE.md`
+- Resume and LinkedIn content: `docs/RESUME_LINKEDIN.md`
+- Interview guide: `docs/INTERVIEW_GUIDE.md`

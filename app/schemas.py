@@ -63,3 +63,23 @@ class HealthResponse(BaseModel):
     model_provider: str
     model_name: str
     has_openai_api_key: bool
+
+
+class JobDescriptionCreateRequest(BaseModel):
+    title: str = Field(..., min_length=1)
+    company: str = Field(..., min_length=1)
+    description: str = Field(..., min_length=1)
+
+
+class JobDescriptionResponse(BaseModel):
+    id: int
+    created_at: str
+    title: str
+    company: str
+    description: str
+    similarity: float | None = None
+
+
+class JobSearchRequest(BaseModel):
+    query_text: str = Field(..., min_length=1)
+    limit: int = Field(5, ge=1, le=20)

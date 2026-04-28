@@ -34,3 +34,15 @@ def initialize_database(db_path: Path = DEFAULT_DB_PATH) -> None:
             )
             """
         )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS job_descriptions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                title TEXT NOT NULL,
+                company TEXT NOT NULL,
+                description TEXT NOT NULL,
+                embedding_json TEXT NOT NULL
+            )
+            """
+        )

@@ -6,9 +6,13 @@ from app.config import load_config
 from app.matcher import MatchResult
 from app.repository import (
     AnalysisRecord,
+    JobDescriptionRecord,
     get_analysis_result,
     list_analysis_results,
+    list_job_descriptions,
     save_analysis_result,
+    save_job_description,
+    search_similar_jobs,
 )
 from app.schemas import (
     AnalysisDetailResponse,
@@ -16,6 +20,9 @@ from app.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
     HealthResponse,
+    JobDescriptionCreateRequest,
+    JobDescriptionResponse,
+    JobSearchRequest,
 )
 from app.services import get_analyzer
 
@@ -72,6 +79,17 @@ def record_to_detail_response(record: AnalysisRecord) -> AnalysisDetailResponse:
     )
 
 
+def job_record_to_response(record: JobDescriptionRecord) -> JobDescriptionResponse:
+    return JobDescriptionResponse(
+        id=record.id,
+        created_at=record.created_at,
+        title=record.title,
+        company=record.company,
+        description=record.description,
+        similarity=record.similarity,
+    )
+
+
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     config = load_config()
@@ -123,3 +141,25 @@ def history_detail(record_id: int) -> AnalysisDetailResponse:
     if record is None:
         raise HTTPException(status_code=404, detail="Analysis record not found.")
     return record_to_detail_response(record)
+
+
+@app.post("/jobs", response_model=JobDescriptionResponse)
+def create_job(request: JobDescriptionCreateRequest) -> JobDescriptionResponse:
+    record = save_job_description(
+        title=request.title,
+        company=request.company,
+        description=request.description,
+    )
+    return job_record_to_response(record)
+
+
+@app.get("/jobs", response_model=list[JobDescriptionResponse])
+def jobs(limit: int = 10) -> list[JobDescriptionResponse]:
+    records = list_job_descriptions(limit=limit)
+    return [job_record_to_response(record) for record in records]
+
+
+@app.post("/jobs/search", response_model=list[JobDescriptionResponse])
+def job_search(request: JobSearchRequest) -> list[JobDescriptionResponse]:
+    records = search_similar_jobs(query_text=request.query_text, limit=request.limit)
+    return [job_record_to_response(record) for record in records]

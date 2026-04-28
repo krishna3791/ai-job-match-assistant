@@ -7,6 +7,7 @@ from pathlib import Path
 from app.config import AppConfig
 from app.database import DEFAULT_DB_PATH, get_connection, initialize_database
 from app.matcher import MatchResult
+from app.vector_search import build_embedding, cosine_similarity
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,16 @@ class AnalysisRecord:
     resume_text: str
     job_description_text: str
     result: dict[str, object]
+
+
+@dataclass(frozen=True)
+class JobDescriptionRecord:
+    id: int
+    created_at: str
+    title: str
+    company: str
+    description: str
+    similarity: float | None = None
 
 
 def match_result_to_dict(result: MatchResult) -> dict[str, object]:
@@ -49,6 +60,17 @@ def row_to_record(row: object) -> AnalysisRecord:
         resume_text=row["resume_text"],
         job_description_text=row["job_description_text"],
         result=json.loads(row["result_json"]),
+    )
+
+
+def row_to_job_record(row: object, similarity: float | None = None) -> JobDescriptionRecord:
+    return JobDescriptionRecord(
+        id=row["id"],
+        created_at=row["created_at"],
+        title=row["title"],
+        company=row["company"],
+        description=row["description"],
+        similarity=similarity,
     )
 
 
@@ -130,3 +152,72 @@ def get_analysis_result(
     if row is None:
         return None
     return row_to_record(row)
+
+
+def save_job_description(
+    *,
+    title: str,
+    company: str,
+    description: str,
+    db_path: Path = DEFAULT_DB_PATH,
+) -> JobDescriptionRecord:
+    initialize_database(db_path)
+    embedding = build_embedding(description)
+
+    with get_connection(db_path) as connection:
+        cursor = connection.execute(
+            """
+            INSERT INTO job_descriptions (
+                title,
+                company,
+                description,
+                embedding_json
+            )
+            VALUES (?, ?, ?, ?)
+            """,
+            (title, company, description, json.dumps(embedding)),
+        )
+        record_id = cursor.lastrowid
+        row = connection.execute(
+            "SELECT * FROM job_descriptions WHERE id = ?",
+            (record_id,),
+        ).fetchone()
+
+    return row_to_job_record(row)
+
+
+def list_job_descriptions(
+    *, limit: int = 10, db_path: Path = DEFAULT_DB_PATH
+) -> list[JobDescriptionRecord]:
+    initialize_database(db_path)
+    with get_connection(db_path) as connection:
+        rows = connection.execute(
+            """
+            SELECT * FROM job_descriptions
+            ORDER BY id DESC
+            LIMIT ?
+            """,
+            (limit,),
+        ).fetchall()
+
+    return [row_to_job_record(row) for row in rows]
+
+
+def search_similar_jobs(
+    *, query_text: str, limit: int = 5, db_path: Path = DEFAULT_DB_PATH
+) -> list[JobDescriptionRecord]:
+    initialize_database(db_path)
+    query_embedding = build_embedding(query_text)
+
+    with get_connection(db_path) as connection:
+        rows = connection.execute("SELECT * FROM job_descriptions").fetchall()
+
+    scored_records = []
+    for row in rows:
+        job_embedding = json.loads(row["embedding_json"])
+        similarity = cosine_similarity(query_embedding, job_embedding)
+        scored_records.append(row_to_job_record(row, similarity=round(similarity, 4)))
+
+    return sorted(scored_records, key=lambda record: record.similarity or 0, reverse=True)[
+        :limit
+    ]
