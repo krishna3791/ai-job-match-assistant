@@ -1,2 +1,1 @@
-# Day 1 has no external dependencies.
-# We will add packages as the project grows.
+pytest==8.3.4

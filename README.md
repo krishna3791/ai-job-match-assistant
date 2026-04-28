@@ -53,6 +53,12 @@ Run JSON output:
 python scripts/analyze_match.py data/sample_resume.txt data/sample_job_description.txt --format json
 ```
 
+Run tests:
+
+```powershell
+python -m pytest
+```
+
 If `python` is not available on Windows, install Python 3.11+ from https://www.python.org/downloads/windows/ and enable "Add python.exe to PATH" during installation.
 
 ## Project Structure
@@ -70,6 +76,9 @@ ai-job-match-assistant/
   data/
     sample_resume.txt
     sample_job_description.txt
+  tests/
+    test_cli.py
+    test_matcher.py
   scripts/
     analyze_match.py
 ```
