@@ -34,9 +34,14 @@ def main() -> None:
         json.dumps(
             {
                 "score": result.score,
+                "readiness_level": result.readiness_level,
+                "resume_skills": result.resume_skills,
+                "job_skills": result.job_skills,
                 "matched_skills": result.matched_skills,
                 "missing_skills": result.missing_skills,
+                "missing_skills_by_category": result.missing_skills_by_category,
                 "suggestions": result.suggestions,
+                "learning_plan": result.learning_plan,
             },
             indent=2,
         )

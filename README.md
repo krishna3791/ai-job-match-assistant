@@ -2,12 +2,18 @@
 
 Portfolio project for moving from data engineering into AI engineering.
 
+GitHub: https://github.com/krishna3791/ai-job-match-assistant
+
 This first version works without paid AI APIs. It compares a resume with a job description using a simple skill-matching engine, then returns:
 
 - Match score
+- Readiness level
+- Resume and job skills detected
 - Skills found in both resume and job description
 - Skills missing from the resume
+- Missing skills grouped by category
 - Resume improvement suggestions
+- Personalized learning plan
 
 Later versions will add:
 
