@@ -1,0 +1,2 @@
+# Day 1 has no external dependencies.
+# We will add packages as the project grows.

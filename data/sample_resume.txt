@@ -1,0 +1,4 @@
+Data Engineer with 5 years of experience building SQL and Python data pipelines.
+Designed ETL workflows with Spark and Airflow.
+Worked with Snowflake, AWS, and data warehouse modeling.
+Improved pipeline reliability and supported analytics teams with clean datasets.

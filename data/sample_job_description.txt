@@ -1,0 +1,3 @@
+We are hiring an AI Data Engineer to build production data pipelines for GenAI products.
+The role requires Python, SQL, Spark, Airflow, AWS, LLMs, RAG, embeddings, and vector databases.
+Experience with FastAPI, Docker, and CI/CD is preferred.
