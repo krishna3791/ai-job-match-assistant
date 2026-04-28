@@ -46,6 +46,53 @@ def test_openai_provider_requires_api_key() -> None:
         analyzer.analyze("resume", "job")
 
 
+def test_openai_provider_uses_structured_response(monkeypatch: pytest.MonkeyPatch) -> None:
+    class ParsedOutput:
+        score = 75
+        readiness_level = "good match with a few gaps"
+        resume_skills = ["python"]
+        job_skills = ["python", "llm"]
+        matched_skills = ["python"]
+        missing_skills = ["llm"]
+        missing_skills_by_category = {"ai_engineering": ["llm"]}
+        suggestions = ["Add LLM project experience."]
+        learning_plan = ["Build a small hands-on feature that uses llm."]
+
+    class FakeResponse:
+        output_parsed = ParsedOutput()
+
+    class FakeResponses:
+        def parse(self, **kwargs: object) -> FakeResponse:
+            assert kwargs["model"] == "gpt-test"
+            assert "text_format" in kwargs
+            return FakeResponse()
+
+    class FakeClient:
+        def __init__(self, api_key: str) -> None:
+            assert api_key == "test-key"
+            self.responses = FakeResponses()
+
+    import types
+    import sys
+
+    fake_openai = types.SimpleNamespace(OpenAI=FakeClient)
+    monkeypatch.setitem(sys.modules, "openai", fake_openai)
+
+    analyzer = OpenAIAnalyzer(
+        config=AppConfig(
+            app_env="test",
+            model_provider="openai",
+            model_name="gpt-test",
+            openai_api_key="test-key",
+        )
+    )
+
+    result = analyzer.analyze("resume", "job")
+
+    assert result.score == 75
+    assert result.missing_skills == ["llm"]
+
+
 def test_get_analyzer_rejects_unknown_provider() -> None:
     config = AppConfig(
         app_env="test",

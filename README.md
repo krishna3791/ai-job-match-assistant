@@ -71,6 +71,15 @@ Then open:
 http://127.0.0.1:8000/docs
 ```
 
+Useful API endpoints:
+
+```text
+GET /health
+POST /analyze
+GET /history
+GET /history/{record_id}
+```
+
 Show safe configuration metadata:
 
 ```powershell
@@ -94,7 +103,9 @@ ai-job-match-assistant/
     __init__.py
     cli.py
     config.py
+    database.py
     matcher.py
+    repository.py
     schemas.py
     services.py
   data/
@@ -105,6 +116,7 @@ ai-job-match-assistant/
     test_cli.py
     test_config.py
     test_matcher.py
+    test_repository.py
     test_services.py
   scripts/
     analyze_match.py

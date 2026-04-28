@@ -31,12 +31,20 @@ def test_analyze_endpoint_returns_match_result() -> None:
     payload = response.json()
 
     assert response.status_code == 200
+    assert isinstance(payload["id"], int)
     assert payload["provider"] == "mock"
     assert payload["score"] == 62
     assert payload["missing_skills"] == ["embeddings", "llm", "rag"]
     assert payload["missing_skills_by_category"] == {
         "ai_engineering": ["embeddings", "llm", "rag"]
     }
+
+    detail_response = client.get(f"/history/{payload['id']}")
+    detail_payload = detail_response.json()
+
+    assert detail_response.status_code == 200
+    assert detail_payload["id"] == payload["id"]
+    assert detail_payload["score"] == 62
 
 
 def test_analyze_endpoint_validates_empty_input() -> None:
@@ -46,3 +54,10 @@ def test_analyze_endpoint_validates_empty_input() -> None:
     )
 
     assert response.status_code == 422
+
+
+def test_history_endpoint_returns_recent_items() -> None:
+    response = client.get("/history?limit=5")
+
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
