@@ -26,8 +26,31 @@ Later versions will add:
 
 ## Quick Start
 
+Create and activate a virtual environment:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+If PowerShell blocks activation, run:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Run the text report:
+
 ```powershell
 python scripts/analyze_match.py data/sample_resume.txt data/sample_job_description.txt
+```
+
+Run JSON output:
+
+```powershell
+python scripts/analyze_match.py data/sample_resume.txt data/sample_job_description.txt --format json
 ```
 
 If `python` is not available on Windows, install Python 3.11+ from https://www.python.org/downloads/windows/ and enable "Add python.exe to PATH" during installation.
@@ -42,6 +65,7 @@ ai-job-match-assistant/
   requirements.txt
   app/
     __init__.py
+    cli.py
     matcher.py
   data/
     sample_resume.txt
