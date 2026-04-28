@@ -92,6 +92,12 @@ Then open:
 http://127.0.0.1:8000/docs
 ```
 
+For the local web app, open:
+
+```text
+http://127.0.0.1:8000/
+```
+
 Useful API endpoints:
 
 ```text
@@ -102,6 +108,8 @@ GET /history/{record_id}
 POST /jobs
 GET /jobs
 POST /jobs/search
+POST /resume/analyze
+POST /resume/rewrite
 ```
 
 Show safe configuration metadata:
@@ -131,8 +139,11 @@ ai-job-match-assistant/
     evaluation.py
     matcher.py
     repository.py
+    resume_documents.py
+    resume_rewriter.py
     schemas.py
     services.py
+    static/
     vector_search.py
   data/
     sample_resume.txt
@@ -145,6 +156,9 @@ ai-job-match-assistant/
     test_jobs_api.py
     test_matcher.py
     test_repository.py
+    test_resume_documents.py
+    test_resume_rewriter.py
+    test_resume_upload_api.py
     test_services.py
     test_vector_search.py
   scripts/

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Job Match Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace">
+        <div class="topbar">
+          <div>
+            <h1>AI Job Match Assistant</h1>
+            <p>Local resume analysis, ATS review, and targeted rewrite workflow.</p>
+          </div>
+          <a class="docs-link" href="/docs" target="_blank">API Docs</a>
+        </div>
+
+        <div class="grid">
+          <section class="panel input-panel">
+            <h2>Session</h2>
+            <form id="analysisForm">
+              <label>
+                Resume
+                <input id="resumeFile" name="resume_file" type="file" accept=".txt,.docx,.pdf" required />
+              </label>
+
+              <label>
+                Job Description
+                <textarea id="jobDescription" name="job_description_text" rows="14" required placeholder="Paste the full job description here..."></textarea>
+              </label>
+
+              <div class="button-row">
+                <button type="submit">Analyze Resume</button>
+                <button id="rewriteButton" type="button" disabled>Rewrite Draft</button>
+              </div>
+            </form>
+            <p class="guardrail">
+              Rewrite mode is conservative: it preserves the uploaded source and creates a reviewable draft without inventing details.
+            </p>
+          </section>
+
+          <section class="panel results-panel">
+            <div class="status-row">
+              <h2>Results</h2>
+              <span id="statusText">Waiting for upload</span>
+            </div>
+
+            <div class="metric-grid">
+              <div class="metric">
+                <span>Match</span>
+                <strong id="matchScore">--</strong>
+              </div>
+              <div class="metric">
+                <span>ATS</span>
+                <strong id="atsScore">--</strong>
+              </div>
+              <div class="metric">
+                <span>Experience</span>
+                <strong id="yearsExperience">--</strong>
+              </div>
+            </div>
+
+            <div class="result-block">
+              <h3>Missing Skills</h3>
+              <div id="missingSkills" class="chips"></div>
+            </div>
+
+            <div class="result-block">
+              <h3>ATS Recommendations</h3>
+              <ul id="atsRecommendations"></ul>
+            </div>
+
+            <div class="result-block">
+              <h3>Resume Suggestions</h3>
+              <ul id="resumeSuggestions"></ul>
+            </div>
+
+            <div class="result-block">
+              <h3>Resume Preview</h3>
+              <pre id="resumePreview"></pre>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

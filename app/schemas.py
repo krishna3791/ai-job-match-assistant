@@ -83,3 +83,18 @@ class JobDescriptionResponse(BaseModel):
 class JobSearchRequest(BaseModel):
     query_text: str = Field(..., min_length=1)
     limit: int = Field(5, ge=1, le=20)
+
+
+class ATSReportResponse(BaseModel):
+    score: int
+    strengths: list[str]
+    issues: list[str]
+    recommendations: list[str]
+
+
+class ResumeUploadAnalyzeResponse(BaseModel):
+    filename: str
+    years_experience_estimate: int | None
+    ats: ATSReportResponse
+    analysis: AnalyzeResponse
+    resume_preview: str
